@@ -56,7 +56,7 @@ private:
   ImVec2 frameratetextsize; 
   const ImU32 selectioncolor = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
   const float cornerroundingfactor = 10.0f;
-  const float perimeterthickness = 3.0f;
+  const float perimeterthickness = 8.0f;
   
   /**
    * Initiates video capture from specified camera along with setting proper resolution of frames to be read from capture object
