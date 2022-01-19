@@ -167,6 +167,11 @@ int DetectionVisualizer::detectDisplayLoop()
   double detectionstarttimestamp = 0.0;
   double finishtimestamp = glfwGetTime();
 
+  ImGuiIO& io = ImGui::GetIO();
+  ImFontConfig config;
+  config.SizePixels = fontsize;
+  ImFont* font = io.Fonts->AddFontDefault(&config);
+
   while(glfwWindowShouldClose(mainwindow.window) == 0 && glfwGetKey(mainwindow.window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
   {
 
@@ -224,7 +229,6 @@ int DetectionVisualizer::detectDisplayLoop()
 
     ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), ImVec2(frame.cols, frame.rows));
     ImDrawList* drawlist = ImGui::GetWindowDrawList();
-
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
