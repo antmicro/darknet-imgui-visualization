@@ -227,6 +227,8 @@ int DetectionVisualizer::detectDisplayLoop()
 
 
     for (bbox_t object : detected_objects) {
+      ImU32 color = objectcolors[object.obj_id];
+
       ImVec2 upperleftcorner(
           object.x + imguiwindowposition.width,
           object.y + imguiwindowposition.height);
@@ -238,7 +240,7 @@ int DetectionVisualizer::detectDisplayLoop()
       drawlist -> AddRect(
           upperleftcorner,
           lowerrightcorner,
-          selectioncolor,
+          color,
           cornerroundingfactor,
           0,
           perimeterthickness); 
@@ -248,7 +250,7 @@ int DetectionVisualizer::detectDisplayLoop()
           upperleftcorner.y + cornerroundingfactor);
       drawlist -> AddText(
           textposition,
-          selectioncolor,
+          color,
           text.c_str()
           );
     }
@@ -257,7 +259,7 @@ int DetectionVisualizer::detectDisplayLoop()
         ImVec2 (
           imguiwindowposition.width + mainwindow.viewportsize.width - ImGui::CalcTextSize(frameratetext).x - cornerroundingfactor,
           imguiwindowposition.height + mainwindow.viewportsize.height - ImGui::CalcTextSize(frameratetext).y - cornerroundingfactor),
-        selectioncolor,
+        frameratecolor,
         frameratetext
         );
     
@@ -327,7 +329,12 @@ int DetectionVisualizer::run()
     std::cout << "Use --help to print usage." << std::endl << std::endl;
     return EXIT_FAILURE;
   }
-  
+ 
+  std::mt19937 rng(seed);
+  std::uniform_real_distribution<float> dis(0.0, 1.0);
+  for(int i = 0; i < objectnames.size(); i++)
+    objectcolors.push_back(ImColor(ImVec4(dis(rng), dis(rng), dis(rng), 1.0f)));
+
   detectDisplayLoop();
 
   glfwTerminate();

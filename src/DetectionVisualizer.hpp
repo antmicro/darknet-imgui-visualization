@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <random>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -52,12 +53,15 @@ private:
   std::string weightsfile = "";
   
   std::vector<std::string> objectnames;
+  std::vector<ImU32> objectcolors;
 
   ImVec2 frameratetextsize; 
-  const ImU32 selectioncolor = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
+  const ImU32 frameratecolor = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
   const float cornerroundingfactor = 10.0f;
   const float perimeterthickness = 8.0f;
-  
+
+  const int seed = 12345;
+
   /**
    * Initiates video capture from specified camera along with setting proper resolution of frames to be read from capture object
    * @return EXIT_SUCCESS if executed successfully
