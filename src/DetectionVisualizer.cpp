@@ -251,7 +251,7 @@ int DetectionVisualizer::detectDisplayLoop()
 
       ImVec2 textposition(
           upperleftcorner.x + cornerroundingfactor,
-          upperleftcorner.y + cornerroundingfactor);
+          upperleftcorner.y - fontsize - cornerroundingfactor);
       drawlist -> AddText(
           textposition,
           color,
