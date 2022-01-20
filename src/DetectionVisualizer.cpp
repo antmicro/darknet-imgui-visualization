@@ -163,6 +163,7 @@ int DetectionVisualizer::detectDisplayLoop()
   windowflags |= ImGuiWindowFlags_NoInputs;
 
   char frameratetext[20];
+  float threshold = 0.0;
   double overallstarttimestamp = glfwGetTime();
   double detectionstarttimestamp = 0.0;
   double finishtimestamp = glfwGetTime();
@@ -236,36 +237,40 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::PushFont(filterfont);
     ImGui::Begin("Filter");
 
+    ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
+
     ImGui::End();
     ImGui::PopFont();
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
 
-      ImVec2 upperleftcorner(
-          object.x + imguiwindowposition.width,
-          object.y + imguiwindowposition.height);
-      ImVec2 lowerrightcorner(
-          upperleftcorner.x + object.w,
-          upperleftcorner.y + object.h);
-      std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
-
-      drawlist -> AddRect(
-          upperleftcorner,
-          lowerrightcorner,
-          color,
-          cornerroundingfactor,
-          0,
-          perimeterthickness); 
-
-      ImVec2 textposition(
-          upperleftcorner.x + cornerroundingfactor,
-          upperleftcorner.y - fontsize - cornerroundingfactor);
-      drawlist -> AddText(
-          textposition,
-          color,
-          text.c_str()
-          );
+      if(object.prob >= threshold) {
+        ImVec2 upperleftcorner(
+            object.x + imguiwindowposition.width,
+            object.y + imguiwindowposition.height);
+        ImVec2 lowerrightcorner(
+            upperleftcorner.x + object.w,
+            upperleftcorner.y + object.h);
+        std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
+  
+        drawlist -> AddRect(
+            upperleftcorner,
+            lowerrightcorner,
+            color,
+            cornerroundingfactor,
+            0,
+            perimeterthickness); 
+  
+        ImVec2 textposition(
+            upperleftcorner.x + cornerroundingfactor,
+            upperleftcorner.y - fontsize - cornerroundingfactor);
+        drawlist -> AddText(
+            textposition,
+            color,
+            text.c_str()
+            );
+      }
     }
 
     drawlist -> AddText(
