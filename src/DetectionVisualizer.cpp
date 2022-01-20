@@ -238,7 +238,17 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::PushFont(filterfont);
     ImGui::Begin("Filter");
 
-    ImGui::InputText("Class name", filterclass, 16);
+    ImGui::InputText("Class name", filterclass, 16, ImGuiInputTextFlags_CallbackCharFilter,
+            [](ImGuiInputTextCallbackData* d) -> int {
+      ImWchar c = d->EventChar;
+      if((c >= 'a' && c <= 'z') || c == ' ')
+        return 0;
+      if(c >= 'A' && c <= 'Z') {
+        d->EventChar -= 'A'-'a';
+        return 0;
+      }
+      return 1;
+    });
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
     ImGui::End();
