@@ -168,9 +168,11 @@ int DetectionVisualizer::detectDisplayLoop()
   double finishtimestamp = glfwGetTime();
 
   ImGuiIO& io = ImGui::GetIO();
-  ImFontConfig config;
-  config.SizePixels = fontsize;
-  ImFont* font = io.Fonts->AddFontDefault(&config);
+  ImFontConfig mainconfig, filterconfig;
+  mainconfig.SizePixels = fontsize;
+  io.Fonts-> AddFontDefault(&mainconfig);
+  filterconfig.SizePixels = filterfontsize;
+  ImFont* filterfont = io.Fonts->AddFontDefault(&filterconfig);
 
   while(glfwWindowShouldClose(mainwindow.window) == 0 && glfwGetKey(mainwindow.window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
   {
@@ -229,6 +231,13 @@ int DetectionVisualizer::detectDisplayLoop()
 
     ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), ImVec2(frame.cols, frame.rows));
     ImDrawList* drawlist = ImGui::GetWindowDrawList();
+    
+    ImGui::End();
+    ImGui::PushFont(filterfont);
+    ImGui::Begin("Filter");
+
+    ImGui::End();
+    ImGui::PopFont();
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
@@ -267,7 +276,6 @@ int DetectionVisualizer::detectDisplayLoop()
         frameratetext
         );
     
-    ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -60,6 +60,7 @@ private:
   const float cornerroundingfactor = 10.0f;
   const float perimeterthickness = 8.0f;
   const float fontsize = 25.0f;
+  const float filterfontsize = 15.0f;
 
   const int seed = 12345;
 
