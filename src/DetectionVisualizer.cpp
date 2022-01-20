@@ -163,6 +163,7 @@ int DetectionVisualizer::detectDisplayLoop()
   windowflags |= ImGuiWindowFlags_NoInputs;
 
   char frameratetext[20];
+  char filterclass[16] = "";
   float threshold = 0.0;
   double overallstarttimestamp = glfwGetTime();
   double detectionstarttimestamp = 0.0;
@@ -237,6 +238,7 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::PushFont(filterfont);
     ImGui::Begin("Filter");
 
+    ImGui::InputText("Class name", filterclass, 16);
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
     ImGui::End();
@@ -244,8 +246,11 @@ int DetectionVisualizer::detectDisplayLoop()
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
+      const char* objectclass_cstr = objectnames[object.obj_id].c_str();
 
-      if(object.prob >= threshold) {
+      if(object.prob >= threshold && 
+              strlen(filterclass) <= strlen(objectclass_cstr) &&
+              strncmp(filterclass, objectclass_cstr, strlen(filterclass)) == 0) {
         ImVec2 upperleftcorner(
             object.x + imguiwindowposition.width,
             object.y + imguiwindowposition.height);
