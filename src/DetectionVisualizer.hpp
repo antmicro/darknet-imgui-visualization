@@ -57,6 +57,7 @@ private:
 
   ImVec2 frameratetextsize; 
   const ImU32 frameratecolor = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
+  const ImVec4 hiddenobjectcolor = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
   const float cornerroundingfactor = 10.0f;
   const float perimeterthickness = 8.0f;
   const float fontsize = 25.0f;

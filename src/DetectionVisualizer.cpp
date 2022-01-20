@@ -251,13 +251,15 @@ int DetectionVisualizer::detectDisplayLoop()
     });
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
-    ImGui::End();
+    ImGui::BeginChild("scrolling");
     ImGui::PopFont();
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
       const char* objectclass_cstr = objectnames[object.obj_id].c_str();
-
+      ImVec4 listitemcolor;
+      std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
+      
       if(object.prob >= threshold && 
               strlen(filterclass) <= strlen(objectclass_cstr) &&
               strncmp(filterclass, objectclass_cstr, strlen(filterclass)) == 0) {
@@ -267,7 +269,6 @@ int DetectionVisualizer::detectDisplayLoop()
         ImVec2 lowerrightcorner(
             upperleftcorner.x + object.w,
             upperleftcorner.y + object.h);
-        std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
   
         drawlist -> AddRect(
             upperleftcorner,
@@ -285,7 +286,16 @@ int DetectionVisualizer::detectDisplayLoop()
             color,
             text.c_str()
             );
+
+        listitemcolor = ImGui::ColorConvertU32ToFloat4(color);
       }
+      else
+        listitemcolor = hiddenobjectcolor;
+
+      ImGui::PushFont(filterfont);
+      ImGui::TextColored(listitemcolor, text.c_str());
+      ImGui::PopFont();
+
     }
 
     drawlist -> AddText(
@@ -295,7 +305,9 @@ int DetectionVisualizer::detectDisplayLoop()
         frameratecolor,
         frameratetext
         );
-    
+
+    ImGui::EndChild();    
+    ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
