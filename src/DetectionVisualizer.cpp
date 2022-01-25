@@ -252,6 +252,11 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
     ImGui::BeginChild("scrolling");
+    ImGui::BeginTable("Detections", 2);
+    ImGui::TableSetupColumn("Class", ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("Certainty");
+    ImGui::TableHeadersRow();
+
     ImGui::PopFont();
 
     for (bbox_t object : detected_objects) {
@@ -293,7 +298,10 @@ int DetectionVisualizer::detectDisplayLoop()
         listitemcolor = hiddenobjectcolor;
 
       ImGui::PushFont(filterfont);
-      ImGui::TextColored(listitemcolor, text.c_str());
+      ImGui::TableNextColumn();
+      ImGui::TextColored(listitemcolor, objectclass_cstr);
+      ImGui::TableNextColumn();
+      ImGui::TextColored(listitemcolor, "%f", object.prob*100);
       ImGui::PopFont();
 
     }
@@ -306,6 +314,7 @@ int DetectionVisualizer::detectDisplayLoop()
         frameratetext
         );
 
+    ImGui::EndTable();
     ImGui::EndChild();    
     ImGui::End();
     ImGui::Render();
