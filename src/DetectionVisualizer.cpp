@@ -322,6 +322,7 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+    glDeleteTextures(1, &textureID);
     glfwSwapBuffers(mainwindow.window);
   }
   return EXIT_SUCCESS;
