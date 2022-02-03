@@ -239,9 +239,9 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::Begin("Filter");
 
     ImGui::InputText("Class name", &filterclass, ImGuiInputTextFlags_CallbackCharFilter,
-            [](ImGuiInputTextCallbackData* d) -> int {
-      ImWchar c = d->EventChar;
-      return !(std::isalpha(c) || c == ' ');
+      [](ImGuiInputTextCallbackData* d) -> int {
+        ImWchar c = d->EventChar;
+        return !(std::isalpha(c) || c == ' ');
     });
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
@@ -296,7 +296,9 @@ int DetectionVisualizer::detectDisplayLoop()
         listitemcolor = ImGui::ColorConvertU32ToFloat4(color);
       }
       else
+      {
         listitemcolor = hiddenobjectcolor;
+      }
 
       ImGui::PushFont(filterfont);
       ImGui::TableNextColumn();
