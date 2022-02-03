@@ -64,6 +64,7 @@ private:
   const float perimeterthickness = 8.0f;
   const float fontsize = 25.0f;
   const float filterfontsize = 15.0f;
+  float threshold = 0.2f;
 
   const int seed = 12345;
 

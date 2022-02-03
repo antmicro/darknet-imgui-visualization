@@ -14,7 +14,8 @@ int DetectionVisualizer::parseArguments(int argc, char* argv[])
     ("height", "sets input resolution height", cxxopts::value<int>(userspecifiedresolution.height))
     ("n,names-file", "path to the file with names of detected objects, \e[1mrequired\e[0m", cxxopts::value<std::string>(namesfile))
     ("c,cfg-file", "path to the file with configuration, \e[1mrequired\e[0m", cxxopts::value<std::string>(cfgfile))
-    ("w,weights-file", "path to the file with weights, \e[1mrequired\e[0m", cxxopts::value<std::string>(weightsfile));
+    ("w,weights-file", "path to the file with weights, \e[1mrequired\e[0m", cxxopts::value<std::string>(weightsfile))
+    ("t,confidence-threshold", "starting confidence threshold of detected object", cxxopts::value<float>(threshold));
 
     auto result = options.parse(argc, argv);
     
@@ -164,7 +165,6 @@ int DetectionVisualizer::detectDisplayLoop()
 
   char frameratetext[20];
   std::string filterclass;
-  float threshold = 0.0;
   double overallstarttimestamp = glfwGetTime();
   double detectionstarttimestamp = 0.0;
   double finishtimestamp = glfwGetTime();
