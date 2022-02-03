@@ -259,6 +259,13 @@ int DetectionVisualizer::detectDisplayLoop()
       ImVec4 listitemcolor;
       std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
       
+      std::transform(objectclass.begin(), objectclass.end(), objectclass.begin(),
+              [](unsigned char c){ return std::tolower(c); }
+      );
+      std::transform(filterclass.begin(), filterclass.end(), filterclass.begin(),
+              [](unsigned char c){ return std::tolower(c); }
+      );
+
       if(object.prob >= threshold && 
               filterclass.length() <= objectclass.length() &&
               objectclass.find(filterclass) != std::string::npos) {
