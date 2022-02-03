@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <random>
+#include <cctype>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
