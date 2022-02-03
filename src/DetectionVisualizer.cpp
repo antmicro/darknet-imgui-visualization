@@ -267,7 +267,6 @@ int DetectionVisualizer::detectDisplayLoop()
       );
 
       if(object.prob >= threshold && 
-              filterclass.length() <= objectclass.length() &&
               objectclass.find(filterclass) != std::string::npos) {
         ImVec2 upperleftcorner(
             object.x + imguiwindowposition.width,
