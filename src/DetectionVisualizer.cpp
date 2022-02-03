@@ -302,7 +302,7 @@ int DetectionVisualizer::detectDisplayLoop()
 
       ImGui::PushFont(filterfont);
       ImGui::TableNextColumn();
-      ImGui::TextColored(listitemcolor, objectclass.c_str());
+      ImGui::TextColored(listitemcolor, "%s", objectclass.c_str());
       ImGui::TableNextColumn();
       ImGui::TextColored(listitemcolor, "%f", object.prob*100);
       ImGui::PopFont();
