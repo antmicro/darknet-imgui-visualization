@@ -163,7 +163,7 @@ int DetectionVisualizer::detectDisplayLoop()
   windowflags |= ImGuiWindowFlags_NoInputs;
 
   char frameratetext[20];
-  char filterclass[16] = "";
+  std::string filterclass;
   float threshold = 0.0;
   double overallstarttimestamp = glfwGetTime();
   double detectionstarttimestamp = 0.0;
@@ -238,17 +238,7 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::PushFont(filterfont);
     ImGui::Begin("Filter");
 
-    ImGui::InputText("Class name", filterclass, 16, ImGuiInputTextFlags_CallbackCharFilter,
-            [](ImGuiInputTextCallbackData* d) -> int {
-      ImWchar c = d->EventChar;
-      if((c >= 'a' && c <= 'z') || c == ' ')
-        return 0;
-      if(c >= 'A' && c <= 'Z') {
-        d->EventChar -= 'A'-'a';
-        return 0;
-      }
-      return 1;
-    });
+    ImGui::InputText("Class name", &filterclass);
     ImGui::SliderFloat("Probability threshold", &threshold, 0.0f, 1.0f);
 
     ImGui::BeginChild("scrolling");
@@ -261,13 +251,13 @@ int DetectionVisualizer::detectDisplayLoop()
 
     for (bbox_t object : detected_objects) {
       ImU32 color = objectcolors[object.obj_id];
-      const char* objectclass_cstr = objectnames[object.obj_id].c_str();
+      std::string objectclass = objectnames[object.obj_id];
       ImVec4 listitemcolor;
       std::string text = objectnames[object.obj_id] + " (" + std::to_string(100 * object.prob) + "%)";
       
       if(object.prob >= threshold && 
-              strlen(filterclass) <= strlen(objectclass_cstr) &&
-              strncmp(filterclass, objectclass_cstr, strlen(filterclass)) == 0) {
+              filterclass.length() <= objectclass.length() &&
+              objectclass.find(filterclass) != std::string::npos) {
         ImVec2 upperleftcorner(
             object.x + imguiwindowposition.width,
             object.y + imguiwindowposition.height);
@@ -299,7 +289,7 @@ int DetectionVisualizer::detectDisplayLoop()
 
       ImGui::PushFont(filterfont);
       ImGui::TableNextColumn();
-      ImGui::TextColored(listitemcolor, objectclass_cstr);
+      ImGui::TextColored(listitemcolor, objectclass.c_str());
       ImGui::TableNextColumn();
       ImGui::TextColored(listitemcolor, "%f", object.prob*100);
       ImGui::PopFont();

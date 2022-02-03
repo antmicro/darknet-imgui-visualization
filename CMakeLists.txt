@@ -23,6 +23,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui/backends
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui/misc/cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/include/
 )
 
@@ -36,7 +37,8 @@ add_executable(${PROJECT_NAME}
   third-party/imgui/imgui_draw.cpp
   third-party/imgui/backends/imgui_impl_glfw.cpp
   third-party/imgui/backends/imgui_impl_opengl3.cpp
-  )
+  third-party/imgui/misc/cpp/imgui_stdlib.cpp
+)
 
 target_link_libraries(${PROJECT_NAME}
   darknet
