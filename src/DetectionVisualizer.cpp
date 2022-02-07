@@ -1,5 +1,47 @@
 #include "DetectionVisualizer.hpp"
 
+ThreadedDetector::ThreadedDetector(std::string& cfgfile, std::string& weightsfile) :
+  detector(cfgfile, weightsfile),
+  thr([this] { this->detectLoop(); })
+{}
+
+void ThreadedDetector::setFrame(cv::Mat newframe)
+{
+  std::lock_guard<std::mutex> guard(framemutex);
+  frame = newframe.clone();
+}
+
+cv::Mat ThreadedDetector::getFrame()
+{
+  std::lock_guard<std::mutex> guard(framemutex);
+  return frame;
+}
+
+void ThreadedDetector::setDetectedObjects(std::vector<bbox_t> detected)
+{
+  std::lock_guard<std::mutex> guard(detectedobjectsmutex);
+  detectedobjects = detected;
+}
+
+std::vector<bbox_t> ThreadedDetector::getDetectedObjects()
+{
+  std::lock_guard<std::mutex> guard(detectedobjectsmutex);
+  return detectedobjects;
+}
+
+void ThreadedDetector::detectLoop()
+{
+  while(true)
+  {
+    cv::Mat frame = getFrame();
+    if(!frame.empty())
+    {
+      std::vector<bbox_t> detected = detector.detect(frame);
+      setDetectedObjects(detected);
+    }
+  }
+}
+
 int DetectionVisualizer::parseArguments(int argc, char* argv[])
 {
   try
@@ -149,7 +191,7 @@ int DetectionVisualizer::videoInputInit()
 
 int DetectionVisualizer::detectDisplayLoop()
 {
-  Detector detector(cfgfile, weightsfile);
+  ThreadedDetector detector(cfgfile, weightsfile);
   cv::Mat frame;
 
   ImGuiWindowFlags windowflags = 0;
@@ -198,8 +240,8 @@ int DetectionVisualizer::detectDisplayLoop()
     cv::resize(frame, frame, cv::Size(mainwindow.viewportsize.width, mainwindow.viewportsize.height), cv::INTER_LINEAR);
     cvtColor(frame, frame, cv::COLOR_BGR2RGBA);
 
-    std::vector<bbox_t> detected_objects;
-    detected_objects = detector.detect(frame);
+    detector.setFrame(frame);
+    std::vector<bbox_t> detected_objects = detector.getDetectedObjects();
 
     detectionstarttimestamp = glfwGetTime();
 

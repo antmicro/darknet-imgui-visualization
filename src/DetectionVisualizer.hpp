@@ -7,6 +7,8 @@
 #include <fstream>
 #include <random>
 #include <cctype>
+#include <thread>
+#include <mutex>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -21,6 +23,33 @@
 #include "yolo_v2_class.hpp"
 
 #include "Window.hpp"
+
+class ThreadedDetector
+{
+public:
+  ThreadedDetector(std::string& cfgfile, std::string& weightsfile);
+  
+  void setFrame(cv::Mat newframe);
+
+  cv::Mat getFrame(void);
+
+  void setDetectedObjects(std::vector<bbox_t> detected);
+
+  std::vector<bbox_t> getDetectedObjects();
+private:
+  void detectLoop();
+
+  std::mutex framemutex;
+  std::mutex detectedobjectsmutex;
+
+  Detector detector;
+
+  cv::Mat frame;
+  std::vector<bbox_t> detectedobjects;
+
+  std::thread thr;
+};
+
 
 class DetectionVisualizer
 {
