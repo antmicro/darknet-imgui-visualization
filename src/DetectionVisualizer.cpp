@@ -31,14 +31,17 @@ std::vector<bbox_t> ThreadedDetector::getDetectedObjects()
 
 void ThreadedDetector::detectLoop()
 {
+  double starttimer;
   while(true)
   {
+    starttimer = glfwGetTime();
     cv::Mat frame = getFrame();
     if(!frame.empty())
     {
       std::vector<bbox_t> detected = detector.detect(frame);
       setDetectedObjects(detected);
     }
+    inferencetime = glfwGetTime() - starttimer;
   }
 }
 
@@ -226,7 +229,7 @@ int DetectionVisualizer::detectDisplayLoop()
 
     sprintf(frameratetext, 
         "%.1f / %.1f fps",
-        1000.0/double(detectionstarttimestamp - finishtimestamp)/1000.0, 
+        1000.0/detectionstarttimestamp/1000.0, 
         1000.0/double(overallstarttimestamp - finishtimestamp)/1000.0);
     finishtimestamp = glfwGetTime();
 
@@ -243,7 +246,7 @@ int DetectionVisualizer::detectDisplayLoop()
     detector.setFrame(frame);
     std::vector<bbox_t> detected_objects = detector.getDetectedObjects();
 
-    detectionstarttimestamp = glfwGetTime();
+    detectionstarttimestamp = detector.inferencetime;
 
     glfwPollEvents();
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);

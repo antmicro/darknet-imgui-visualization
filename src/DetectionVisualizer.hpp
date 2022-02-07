@@ -9,6 +9,7 @@
 #include <cctype>
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -42,6 +43,8 @@ public:
   void setDetectedObjects(std::vector<bbox_t> detected);
   std::vector<bbox_t> getDetectedObjects();
 
+  std::atomic<double> inferencetime;
+
 private:
   void detectLoop();
 
@@ -50,7 +53,7 @@ private:
 
   Detector detector;
   std::thread thr;
-  
+
   cv::Mat frame;
   std::vector<bbox_t> detectedobjects;
 };
