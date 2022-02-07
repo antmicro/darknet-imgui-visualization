@@ -24,18 +24,24 @@
 
 #include "Window.hpp"
 
+/**
+ * Wrapper for YOLO detector that runs inference in separate thread
+ */
 class ThreadedDetector
 {
 public:
+ /**
+  * Creates and runs YOLO detector in new thread
+  * @param cfgfile, weightsile - paths to config and weights files needed to initialize detector 
+  */
   ThreadedDetector(std::string& cfgfile, std::string& weightsfile);
   
   void setFrame(cv::Mat newframe);
-
   cv::Mat getFrame(void);
 
   void setDetectedObjects(std::vector<bbox_t> detected);
-
   std::vector<bbox_t> getDetectedObjects();
+
 private:
   void detectLoop();
 
@@ -43,11 +49,10 @@ private:
   std::mutex detectedobjectsmutex;
 
   Detector detector;
-
+  std::thread thr;
+  
   cv::Mat frame;
   std::vector<bbox_t> detectedobjects;
-
-  std::thread thr;
 };
 
 
