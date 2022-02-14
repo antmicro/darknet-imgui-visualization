@@ -43,6 +43,10 @@ public:
   void setDetectedObjects(std::vector<bbox_t> detected);
   std::vector<bbox_t> getDetectedObjects();
 
+  bool isRunning();
+
+  void startThread();
+  
   std::atomic<double> inferencetime;
 
 private:
@@ -56,6 +60,7 @@ private:
 
   cv::Mat frame;
   std::vector<bbox_t> detectedobjects;
+  bool running = false;
 };
 
 

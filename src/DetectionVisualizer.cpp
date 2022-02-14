@@ -1,8 +1,7 @@
 #include "DetectionVisualizer.hpp"
 
 ThreadedDetector::ThreadedDetector(std::string& cfgfile, std::string& weightsfile) :
-  detector(cfgfile, weightsfile),
-  thr([this] { this->detectLoop(); })
+  detector(cfgfile, weightsfile)
 {}
 
 void ThreadedDetector::setFrame(cv::Mat newframe)
@@ -27,6 +26,17 @@ std::vector<bbox_t> ThreadedDetector::getDetectedObjects()
 {
   std::lock_guard<std::mutex> guard(detectedobjectsmutex);
   return detectedobjects;
+}
+
+bool ThreadedDetector::isRunning()
+{
+  return running;
+}
+
+void ThreadedDetector::startThread()
+{
+  running = true;
+  thr = std::thread([this] { this->detectLoop(); });
 }
 
 void ThreadedDetector::detectLoop()
@@ -244,6 +254,10 @@ int DetectionVisualizer::detectDisplayLoop()
     cvtColor(frame, frame, cv::COLOR_BGR2RGBA);
 
     detector.setFrame(frame);
+    if(!detector.isRunning())
+    {
+      detector.startThread();
+    }
     std::vector<bbox_t> detected_objects = detector.getDetectedObjects();
 
     detectionstarttimestamp = detector.inferencetime;
