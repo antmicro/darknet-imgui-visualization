@@ -27,9 +27,10 @@ class Window
     /**
      * Initiates existance of window
      * @param name is a title of window to be created
+     * @param fullscreen flag decides what mode window should be opened in
      * @return EXIT_SUCCESS if executed successfully
      */
-    int init(std::string &name);
+    int init(std::string &name, bool fullscreen);
     /**
      * Initiates imgui support in OpenGL
      * @return EXIT_SUCCESS if executed successfully

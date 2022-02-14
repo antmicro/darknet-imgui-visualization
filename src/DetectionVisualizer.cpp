@@ -12,6 +12,7 @@ int DetectionVisualizer::parseArguments(int argc, char* argv[])
     ("i,camera-id", "number of camera in the system, \e[1mrequired*\e[0m", cxxopts::value<int>(cameraID))
     ("width", "sets input resolution width", cxxopts::value<int>(userspecifiedresolution.width))
     ("height", "sets input resolution height", cxxopts::value<int>(userspecifiedresolution.height))
+    ("f,fullscreen", "puts window in fullscreen mode", cxxopts::value<bool>(fullscreen))
     ("n,names-file", "path to the file with names of detected objects, \e[1mrequired\e[0m", cxxopts::value<std::string>(namesfile))
     ("c,cfg-file", "path to the file with configuration, \e[1mrequired\e[0m", cxxopts::value<std::string>(cfgfile))
     ("w,weights-file", "path to the file with weights, \e[1mrequired\e[0m", cxxopts::value<std::string>(weightsfile))
@@ -370,7 +371,7 @@ int DetectionVisualizer::run()
     }
   }
   
-  if (mainwindow.init(windowname) != EXIT_SUCCESS)
+  if (mainwindow.init(windowname, fullscreen) != EXIT_SUCCESS)
   {
    return EXIT_FAILURE;
   }

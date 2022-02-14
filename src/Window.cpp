@@ -61,10 +61,8 @@ void Window::calculateContentAspectRatio(void)
 // Private functions:
 
 // Init now not private:
-int Window::init(std::string &name)
+int Window::init(std::string &name, bool fullscreen)
 {
-  bool fullscreen = true;
-
   if (!glfwInit())
   {
     glfwTerminate();

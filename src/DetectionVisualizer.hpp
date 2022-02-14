@@ -45,7 +45,8 @@ private:
 
   Window mainwindow;
   cv::VideoCapture capture;
-  
+  bool fullscreen = false;  
+
   int cameraID = -1;
   std::string videofilepath = "";
   cv::Size userspecifiedresolution{0, 0};
