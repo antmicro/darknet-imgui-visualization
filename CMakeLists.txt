@@ -52,3 +52,7 @@ target_link_libraries(${PROJECT_NAME}
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "bin"
 )
+
+install(FILES data/coco.names data/yolov4.cfg data/yolov4.weights
+  DESTINATION share/${PROJECT_NAME}
+)
