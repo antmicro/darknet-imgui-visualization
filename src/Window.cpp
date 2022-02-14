@@ -63,6 +63,8 @@ void Window::calculateContentAspectRatio(void)
 // Init now not private:
 int Window::init(std::string &name)
 {
+  bool fullscreen = true;
+
   if (!glfwInit())
   {
     glfwTerminate();
@@ -75,12 +77,25 @@ int Window::init(std::string &name)
   monitor = mons[0];
 
   const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-  size.width = std::min(mode->width, contentsize.width);
-  size.height = std::min(mode->height, contentsize.height);
-  size = contentsize;
-  viewportsize.width = size.width;
-  viewportsize.height = size.height;
-  window = glfwCreateWindow(size.width, size.height, (char*)name.c_str(), NULL, nullptr);
+  
+  if(!fullscreen)
+  {
+    size.width = std::min(mode->width, contentsize.width);
+    size.height = std::min(mode->height, contentsize.height);
+    size = contentsize;
+    viewportsize.width = size.width;
+    viewportsize.height = size.height;
+    window = glfwCreateWindow(size.width, size.height, (char*)name.c_str(), NULL, nullptr);
+  }
+  else
+  {
+    size.width = mode->width;
+    size.height = mode->height;
+    float scalefactor = std::min(size.width/contentsize.width, size.height/contentsize.height);
+    contentsize.width = contentsize.width*scalefactor;
+    contentsize.height = contentsize.height*scalefactor;
+    window = glfwCreateWindow(size.width, size.height, (char*)name.c_str(), monitor, nullptr);  
+  }
 
   if (window == nullptr)
   {
@@ -103,7 +118,7 @@ int Window::init(std::string &name)
 
   glfwGetWindowPos(window, (int*)&position.width, (int*)&position.height);
   
-  contentaspectratio = float(size.width) / size.height;
+  contentaspectratio = float(contentsize.width) / contentsize.height;
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
   glfwPollEvents();
