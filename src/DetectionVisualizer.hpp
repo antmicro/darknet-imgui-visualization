@@ -33,18 +33,50 @@ class ThreadedDetector
 public:
  /**
   * Creates and runs YOLO detector in new thread
-  * @param cfgfile, weightsile - paths to config and weights files needed to initialize detector 
+  * @param cfgfile - path to the config file defining model
+  * @param weightsfile - path to the file containing weights
   */
   ThreadedDetector(std::string& cfgfile, std::string& weightsfile);
   
+
+  /**
+   * Atomically sets frame.
+   *
+   * @param newframe new frame to detect
+   */
   void setFrame(cv::Mat newframe);
+
+  /**
+   * Returns the frame (thread-safe).
+   *
+   * @return current frame
+   */
   cv::Mat getFrame(void);
 
+  /**
+   * Updates detection results.
+   *
+   * @param detected found objects
+   */
   void setDetectedObjects(std::vector<bbox_t> detected);
+
+  /**
+   * Returns detected objects
+   *
+   * @return detected objects
+   */
   std::vector<bbox_t> getDetectedObjects();
 
+  /**
+   * Tells if the detection is running.
+   *
+   * @return true if detection is still running
+   */
   bool isRunning();
 
+  /**
+   * Starts the detection thread
+   */
   void startThread();
   
   std::atomic<double> inferencetime;
