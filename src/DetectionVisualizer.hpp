@@ -171,6 +171,8 @@ private:
    * @return EXIT_SUCCESS if executed successfully
    */
   int detectDisplayLoop(void);
+
+  void errorDisplayLoop(void);
 };
 
 #endif

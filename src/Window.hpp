@@ -23,7 +23,8 @@ class Window
 
     cv::Size viewportsize {0, 0};
     cv::Size size {640, 480};
-
+    cv::Size position {0, 0};
+    
     /**
      * Destroys the ImGUI context and GLFW objects
      */
@@ -54,7 +55,6 @@ class Window
     const char* glslversion = "#version 130";
 
     cv::Size contentsize {0, 0};
-    cv::Size position {0, 0};
     float contentaspectratio;
 
     bool isFullScreen(void);

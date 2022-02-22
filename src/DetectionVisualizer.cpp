@@ -382,6 +382,56 @@ int DetectionVisualizer::detectDisplayLoop()
   return EXIT_SUCCESS;
 }
 
+void DetectionVisualizer::errorDisplayLoop()
+{
+  ImGuiWindowFlags windowflags= 0;
+  windowflags |= ImGuiWindowFlags_NoTitleBar;
+  windowflags |= ImGuiWindowFlags_NoResize;
+  windowflags |= ImGuiWindowFlags_NoMove;
+  windowflags |= ImGuiWindowFlags_NoScrollbar;
+  windowflags |= ImGuiWindowFlags_NoSavedSettings;
+  windowflags |= ImGuiWindowFlags_NoInputs;
+
+  std::string errorstring = "Placeholder";
+
+  ImGuiIO& io = ImGui::GetIO();
+  ImFontConfig mainconfig;
+  mainconfig.SizePixels = fontsize;
+  io.Fonts->AddFontDefault(&mainconfig);
+
+  while(glfwWindowShouldClose(mainwindow.window) == 0 && glfwGetKey(mainwindow.window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
+  {
+    glfwPollEvents();
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(mainwindow.size.width, mainwindow.size.height));
+    if(!ImGui::Begin("Error window", NULL, windowflags))
+    {
+      perror("Failed to initiate ImGui");
+      ImGui::End();
+      return;
+    }
+
+    ImVec2 textsize = ImGui::CalcTextSize(errorstring.c_str());
+
+    ImGui::SetCursorPosX((mainwindow.size.width - textsize.x)/2);
+    ImGui::SetCursorPosY((mainwindow.size.height - textsize.y)/2);
+    ImGui::TextWrapped(errorstring.c_str());
+
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    glfwSwapBuffers(mainwindow.window);
+  }
+}
+  
+
 int DetectionVisualizer::run()
 { 
   if (mainwindow.init(windowname) != EXIT_SUCCESS)
@@ -393,7 +443,10 @@ int DetectionVisualizer::run()
     return EXIT_FAILURE;
   }
   mainwindow.setFullScreen(fullscreen);
-  
+ 
+  errorDisplayLoop();
+  return EXIT_SUCCESS;
+
   if (openNamesFile() != EXIT_SUCCESS)
   {
     return EXIT_FAILURE;
