@@ -22,7 +22,7 @@ class Window
     GLFWwindow* window = nullptr;
 
     cv::Size viewportsize {0, 0};
-    cv::Size size {0, 0};
+    cv::Size size {640, 480};
 
     /**
      * Destroys the ImGUI context and GLFW objects
@@ -32,10 +32,9 @@ class Window
     /**
      * Initiates existance of window
      * @param name is a title of window to be created
-     * @param fullscreen flag decides what mode window should be opened in
      * @return EXIT_SUCCESS if executed successfully
      */
-    int init(std::string &name, bool fullscreen);
+    int init(std::string &name);
     /**
      * Initiates imgui support in OpenGL
      * @return EXIT_SUCCESS if executed successfully
@@ -43,14 +42,13 @@ class Window
     int imguiInit(void);
 
     cv::Size getContentSize(void);
-    void setContentSize(cv::Size newcontensize);
+    void updateContentSize(cv::Size newcontensize);
 
     cv::Size getSize(void);
-    void setSize(cv::Size newsize);
-
     float getContentAspectRatio(void);
-    void calculateContentAspectRatio(void);
 
+    void setFullScreen(bool fullscreen);
+  
   private:
     GLFWmonitor *monitor = nullptr;
     const char* glslversion = "#version 130";
@@ -60,7 +58,6 @@ class Window
     float contentaspectratio;
 
     bool isFullScreen(void);
-    void setFullScreen(bool fullscreen);
 
     virtual void resize(int width, int height);
     virtual void keyCB(int key, int action);

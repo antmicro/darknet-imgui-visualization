@@ -159,11 +159,8 @@ int DetectionVisualizer::cameraInputInit()
 
   originalresolution.width = capture.get(cv::CAP_PROP_FRAME_WIDTH);
   originalresolution.height = capture.get(cv::CAP_PROP_FRAME_HEIGHT);
-  originalaspectratio = (float)originalresolution.width / originalresolution.height;
 
-  mainwindow.setContentSize(originalresolution);
-  mainwindow.calculateContentAspectRatio();
-  mainwindow.setSize(originalresolution);
+  mainwindow.updateContentSize(originalresolution);
 
   std::cout << "Got " << originalresolution.width << " x " << originalresolution.height << "." << std::endl << std::endl;
   return EXIT_SUCCESS;
@@ -181,9 +178,6 @@ int DetectionVisualizer::videoInputInit()
     static_cast<int>(capture.get(cv::CAP_PROP_FRAME_WIDTH)),
     static_cast<int>(capture.get(cv::CAP_PROP_FRAME_HEIGHT))
   };
-
-  mainwindow.setContentSize(designatedresolution);
-  mainwindow.calculateContentAspectRatio();
 
   if (userspecifiedresolution.width != 0 && userspecifiedresolution.height != 0)
   {
@@ -203,7 +197,7 @@ int DetectionVisualizer::videoInputInit()
       userspecifiedresolution.height
     };
   }
-  mainwindow.setSize(designatedresolution);
+  mainwindow.updateContentSize(designatedresolution);
   
   return EXIT_SUCCESS;
 }
@@ -389,7 +383,17 @@ int DetectionVisualizer::detectDisplayLoop()
 }
 
 int DetectionVisualizer::run()
-{
+{ 
+  if (mainwindow.init(windowname) != EXIT_SUCCESS)
+  {
+    return EXIT_FAILURE;
+  }
+  if (mainwindow.imguiInit() != EXIT_SUCCESS)
+  {
+    return EXIT_FAILURE;
+  }
+  mainwindow.setFullScreen(fullscreen);
+  
   if (openNamesFile() != EXIT_SUCCESS)
   {
     return EXIT_FAILURE;
@@ -428,15 +432,6 @@ int DetectionVisualizer::run()
         return EXIT_FAILURE;
       }
     }
-  }
-  
-  if (mainwindow.init(windowname, fullscreen) != EXIT_SUCCESS)
-  {
-   return EXIT_FAILURE;
-  }
-  if (mainwindow.imguiInit() != EXIT_SUCCESS)
-  {
-   return EXIT_FAILURE;
   }
   
   if (cfgfile == "" || weightsfile == "")
