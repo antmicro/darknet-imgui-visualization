@@ -75,7 +75,7 @@ int Window::init(std::string &name, bool fullscreen)
   monitor = mons[0];
 
   const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-  
+
   if(!fullscreen)
   {
     size.width = std::min(mode->width, contentsize.width);
@@ -87,11 +87,14 @@ int Window::init(std::string &name, bool fullscreen)
   }
   else
   {
+    glfwWindowHint(GLFW_AUTO_ICONIFY, GL_FALSE);
+
     size.width = mode->width;
     size.height = mode->height;
     float scalefactor = std::min(size.width/contentsize.width, size.height/contentsize.height);
     contentsize.width = contentsize.width*scalefactor;
     contentsize.height = contentsize.height*scalefactor;
+    viewportsize = contentsize;
     window = glfwCreateWindow(size.width, size.height, (char*)name.c_str(), monitor, nullptr);  
   }
 
