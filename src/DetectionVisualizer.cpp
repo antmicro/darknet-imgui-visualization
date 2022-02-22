@@ -413,9 +413,9 @@ void DetectionVisualizer::errorDisplayLoop(std::string errorstring)
 
     ImVec2 textsize = ImGui::CalcTextSize(errorstring.c_str());
 
-    ImGui::SetCursorPosX((mainwindow.size.width - textsize.x)/2);
+    ImGui::SetCursorPosX(std::max((mainwindow.size.width - textsize.x)/2.0f, 3.0f));
     ImGui::SetCursorPosY((mainwindow.size.height - textsize.y)/2);
-    ImGui::TextWrapped(errorstring.c_str());
+    ImGui::TextWrapped("%s\nPress ESCAPE to quit", errorstring.c_str());
 
     ImGui::End();
     ImGui::Render();
