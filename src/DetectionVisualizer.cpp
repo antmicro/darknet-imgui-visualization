@@ -108,7 +108,7 @@ void DetectionVisualizer::openNamesFile()
 
   if (namesfile == "")
   {
-    throw "Please supply a file with names for detected objects.\nUse --help to print usage.";
+    throw std::string("Please supply a file with names for detected objects.\nUse --help to print usage.");
   }
   std::ifstream file(namesfile);
   
