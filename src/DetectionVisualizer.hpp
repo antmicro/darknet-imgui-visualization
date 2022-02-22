@@ -172,7 +172,7 @@ private:
    */
   int detectDisplayLoop(void);
 
-  void errorDisplayLoop(void);
+  void errorDisplayLoop(std::string errorstring);
 };
 
 #endif

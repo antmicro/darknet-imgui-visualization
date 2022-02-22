@@ -1,5 +1,10 @@
 #include "DetectionVisualizer.hpp"
 
+inline std::string errorMessage(std::string msg)
+{
+  return msg + ":\n" + std::strerror(errno);
+}
+
 ThreadedDetector::ThreadedDetector(std::string& cfgfile, std::string& weightsfile) :
   detector(cfgfile, weightsfile)
 {}
@@ -103,9 +108,7 @@ int DetectionVisualizer::openNamesFile()
 
   if (namesfile == "")
   {
-    std::cout << "Please supply a file with names for detected objects." << std::endl;
-    std::cout << "Use --help to print usage." << std::endl << std::endl;
-    return EXIT_FAILURE;
+    throw "Please supply a file with names for detected objects.\nUse --help to print usage.";
   }
   std::ifstream file(namesfile);
   
@@ -121,8 +124,7 @@ int DetectionVisualizer::cameraInputInit()
   capture.open("/dev/video" + std::to_string(cameraID));
 
   if(!capture.isOpened()) {
-    perror("Failed to initiate camera capture");
-    return EXIT_FAILURE;
+    throw errorMessage("Failed to initiate camera capture");
   }
 
   cv::Size originalresolution{
@@ -147,13 +149,11 @@ int DetectionVisualizer::cameraInputInit()
 
     if(!capture.set(cv::CAP_PROP_FRAME_HEIGHT, capturedframe.height))
     {
-      perror("Failed to set height of frame to be captured");
-      return EXIT_FAILURE;
+      throw errorMessage("Failed to set height of frame to be captured");
     }
     if(!capture.set(cv::CAP_PROP_FRAME_WIDTH, capturedframe.width))
     {
-      perror("Failed to set width of frame to be captured");
-      return EXIT_FAILURE;
+      throw errorMessage("Failed to set width of frame to be captured");
     }
   }
 
@@ -170,8 +170,7 @@ int DetectionVisualizer::videoInputInit()
 {
   capture.open("filesrc location=" + videofilepath + " ! decodebin ! videoconvert ! appsink" , cv::CAP_GSTREAMER);
   if(!capture.isOpened()) {
-    perror("Failed to initiate video file capture");   
-    return EXIT_FAILURE;
+    throw errorMessage("Failed to initiate video file capture");   
   }
 
   cv::Size designatedresolution{
@@ -382,7 +381,7 @@ int DetectionVisualizer::detectDisplayLoop()
   return EXIT_SUCCESS;
 }
 
-void DetectionVisualizer::errorDisplayLoop()
+void DetectionVisualizer::errorDisplayLoop(std::string errorstring)
 {
   ImGuiWindowFlags windowflags= 0;
   windowflags |= ImGuiWindowFlags_NoTitleBar;
@@ -391,8 +390,6 @@ void DetectionVisualizer::errorDisplayLoop()
   windowflags |= ImGuiWindowFlags_NoScrollbar;
   windowflags |= ImGuiWindowFlags_NoSavedSettings;
   windowflags |= ImGuiWindowFlags_NoInputs;
-
-  std::string errorstring = "Placeholder";
 
   ImGuiIO& io = ImGui::GetIO();
   ImFontConfig mainconfig;
@@ -443,54 +440,44 @@ int DetectionVisualizer::run()
     return EXIT_FAILURE;
   }
   mainwindow.setFullScreen(fullscreen);
- 
-  errorDisplayLoop();
-  return EXIT_SUCCESS;
 
-  if (openNamesFile() != EXIT_SUCCESS)
+  try
   {
-    return EXIT_FAILURE;
-  }
-    
-  if (cameraID >= 0)
-  {
-    if ("" == videofilepath)
+    openNamesFile();
+    if (cameraID >= 0)
     {
-      std::cout << "openning camera no. " << cameraID << std::endl;
-      if (cameraInputInit() != EXIT_SUCCESS)
+      if ("" == videofilepath)
       {
-        return EXIT_FAILURE;
+        std::cout << "openning camera no. " << cameraID << std::endl;
+        cameraInputInit();
+      }
+      else
+      {
+        throw "Too many parameters\nUse --help to print usage.";
       }
     }
     else
     {
-      std::cout << "Too many parameters\n";
-      std::cout << "Use --help to print usage." << std::endl << std::endl;
-      return EXIT_SUCCESS;
-    }
-  }
-  else
-  {
-    if ("" == videofilepath)
-    {
-      std::cout << "Correct video source parameters not specified\n";
-      std::cout << "Use --help to print usage." << std::endl << std::endl;
-      return EXIT_SUCCESS;
-    }
-    else
-    {
-      std::cout << "openning videofile: " << videofilepath << std::endl;
-      if (videoInputInit() != EXIT_SUCCESS)
+      if ("" == videofilepath)
       {
-        return EXIT_FAILURE;
+        throw "Correct video source parameters not specified\nUse --help to print usage.";
+      }
+      else
+      {
+        std::cout << "openning videofile: " << videofilepath << std::endl;
+        videoInputInit();
       }
     }
-  }
   
-  if (cfgfile == "" || weightsfile == "")
+    if (cfgfile == "" || weightsfile == "")
+    {
+      throw "Wrong arguments\nUse --help to print usage.";
+    }
+  }
+  catch(const std::string msg)
   {
-    std::cout << "Wrong aruments\n";
-    std::cout << "Use --help to print usage." << std::endl << std::endl;
+    errorDisplayLoop(msg);
+    std::cout << msg << std::endl << std::endl;
     return EXIT_FAILURE;
   }
  
