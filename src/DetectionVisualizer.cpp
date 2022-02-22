@@ -102,7 +102,7 @@ int DetectionVisualizer::parseArguments(int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 
-int DetectionVisualizer::openNamesFile()
+void DetectionVisualizer::openNamesFile()
 {
   std::vector<std::string> lines;
 
@@ -115,10 +115,9 @@ int DetectionVisualizer::openNamesFile()
   std::string line;
   while(getline(file, line))
     objectnames.push_back(line);
-  return EXIT_SUCCESS;
 }
 
-int DetectionVisualizer::cameraInputInit()
+void DetectionVisualizer::cameraInputInit()
 {
   int apiID = cv::CAP_ANY;
   capture.open("/dev/video" + std::to_string(cameraID));
@@ -163,10 +162,9 @@ int DetectionVisualizer::cameraInputInit()
   mainwindow.updateContentSize(originalresolution);
 
   std::cout << "Got " << originalresolution.width << " x " << originalresolution.height << "." << std::endl << std::endl;
-  return EXIT_SUCCESS;
 }
 
-int DetectionVisualizer::videoInputInit()
+void DetectionVisualizer::videoInputInit()
 {
   capture.open("filesrc location=" + videofilepath + " ! decodebin ! videoconvert ! appsink" , cv::CAP_GSTREAMER);
   if(!capture.isOpened()) {
@@ -197,11 +195,9 @@ int DetectionVisualizer::videoInputInit()
     };
   }
   mainwindow.updateContentSize(designatedresolution);
-  
-  return EXIT_SUCCESS;
 }
 
-int DetectionVisualizer::detectDisplayLoop()
+void DetectionVisualizer::detectDisplayLoop()
 {
   ThreadedDetector detector(cfgfile, weightsfile);
   cv::Mat frame;
@@ -279,7 +275,7 @@ int DetectionVisualizer::detectDisplayLoop()
     {
       perror("Failed to initiate ImGui");
       ImGui::End();
-      return EXIT_SUCCESS;
+      return;
     }
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, frame.cols, frame.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame.data);
@@ -378,7 +374,7 @@ int DetectionVisualizer::detectDisplayLoop()
 
     glfwSwapBuffers(mainwindow.window);
   }
-  return EXIT_SUCCESS;
+  return;
 }
 
 void DetectionVisualizer::errorDisplayLoop(std::string errorstring)

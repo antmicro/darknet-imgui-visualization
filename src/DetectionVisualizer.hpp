@@ -150,27 +150,23 @@ private:
 
   /**
    * Initiates video capture from specified camera along with setting proper resolution of frames to be read from capture object
-   * @return EXIT_SUCCESS if executed successfully
    */
-  int cameraInputInit(void);
+  void cameraInputInit(void);
 
   /**
    * Initiates video capture from specified video file along with scaling down frames to be read from capture object if they won't fit the screen
-   * @return EXIT_SUCCESS if executed successfully
    */
-  int videoInputInit(void);
+  void videoInputInit(void);
 
   /**
    * Opens a file specified in namesfile variable and loads its contents into objectnames vector.
-   * @return EXIT_SUCCESS if executed successfully
    */ 
-  int openNamesFile(void);
+  void openNamesFile(void);
 
   /**
    * Runs a loop which detects objects in each frame and displays result.
-   * @return EXIT_SUCCESS if executed successfully
    */
-  int detectDisplayLoop(void);
+  void detectDisplayLoop(void);
 
   void errorDisplayLoop(std::string errorstring);
 };
