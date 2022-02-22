@@ -168,6 +168,10 @@ private:
    */
   void detectDisplayLoop(void);
 
+  /**
+   * Runs a render loop displaying error message.
+   * @param errorstring is a error message to display
+   */
   void errorDisplayLoop(std::string errorstring);
 };
 
