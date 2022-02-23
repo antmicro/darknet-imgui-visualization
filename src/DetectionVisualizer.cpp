@@ -42,7 +42,7 @@ void ThreadedDetector::startThread()
 void ThreadedDetector::detectLoop()
 {
   double starttimer;
-  while(true)
+  while(running)
   {
     starttimer = glfwGetTime();
     cv::Mat frame = getFrame();
@@ -53,6 +53,12 @@ void ThreadedDetector::detectLoop()
     }
     inferencetime = glfwGetTime() - starttimer;
   }
+}
+
+ThreadedDetector::~ThreadedDetector()
+{
+  running = false;
+  thr.join();
 }
 
 int DetectionVisualizer::parseArguments(int argc, char* argv[])
@@ -451,7 +457,7 @@ int DetectionVisualizer::run()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   detectDisplayLoop();
-
+  
   glDeleteTextures(1, &textureID);
 
   return EXIT_SUCCESS;

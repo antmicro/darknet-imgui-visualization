@@ -38,6 +38,10 @@ public:
   */
   ThreadedDetector(std::string& cfgfile, std::string& weightsfile);
   
+  /**
+   * Stops and destroys running thread 
+   */
+  ~ThreadedDetector();
 
   /**
    * Atomically sets frame.
@@ -92,7 +96,7 @@ private:
 
   cv::Mat frame;
   std::vector<bbox_t> detectedobjects;
-  bool running = false;
+  std::atomic<bool> running = false;
 };
 
 
