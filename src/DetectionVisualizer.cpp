@@ -454,7 +454,6 @@ int DetectionVisualizer::run()
 
   glDeleteTextures(1, &textureID);
 
-  glfwTerminate();
   return EXIT_SUCCESS;
 }
 

@@ -187,3 +187,12 @@ void Window::setFullScreen(bool fullscreen)
   resize(size.width, size.height);
 }
 
+Window::~Window()
+{
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+                  
+  glfwDestroyWindow(window);
+  glfwTerminate();
+}  

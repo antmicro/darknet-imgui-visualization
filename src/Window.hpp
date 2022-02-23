@@ -25,6 +25,11 @@ class Window
     cv::Size size {0, 0};
 
     /**
+     * Destroys the ImGUI context and GLFW objects
+     */
+    ~Window();
+
+    /**
      * Initiates existance of window
      * @param name is a title of window to be created
      * @param fullscreen flag decides what mode window should be opened in
