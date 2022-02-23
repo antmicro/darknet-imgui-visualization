@@ -283,12 +283,7 @@ int DetectionVisualizer::detectDisplayLoop()
       return EXIT_SUCCESS;
     }
 
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, frame.cols, frame.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame.data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
     ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), ImVec2(frame.cols, frame.rows));
@@ -382,7 +377,6 @@ int DetectionVisualizer::detectDisplayLoop()
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    glDeleteTextures(1, &textureID);
     glfwSwapBuffers(mainwindow.window);
   }
   return EXIT_SUCCESS;
@@ -451,7 +445,14 @@ int DetectionVisualizer::run()
   for(int i = 0; i < objectnames.size(); i++)
     objectcolors.push_back(ImColor(ImVec4(dis(rng), dis(rng), dis(rng), 1.0f)));
 
+  glGenTextures(1, &textureID);
+  glBindTexture(GL_TEXTURE_2D, textureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
   detectDisplayLoop();
+
+  glDeleteTextures(1, &textureID);
 
   glfwTerminate();
   return EXIT_SUCCESS;
