@@ -1,8 +1,8 @@
 #include "DetectionVisualizer.hpp"
 
-inline std::string errorMessage(std::string msg)
+inline std::runtime_error errorMessage(std::string msg)
 {
-  return msg + ":\n" + std::strerror(errno);
+  return std::runtime_error(msg + ":\n" + std::strerror(errno));
 }
 
 ThreadedDetector::ThreadedDetector(std::string& cfgfile, std::string& weightsfile) :
@@ -108,7 +108,7 @@ void DetectionVisualizer::openNamesFile()
 
   if (namesfile == "")
   {
-    throw std::string("Please supply a file with names for detected objects.\nUse --help to print usage.");
+    throw std::runtime_error("Please supply a file with names for detected objects.\nUse --help to print usage.");
   }
   std::ifstream file(namesfile);
   
@@ -449,14 +449,14 @@ int DetectionVisualizer::run()
       }
       else
       {
-        throw "Too many parameters\nUse --help to print usage.";
+        throw std::runtime_error("Too many parameters\nUse --help to print usage.");
       }
     }
     else
     {
       if ("" == videofilepath)
       {
-        throw "Correct video source parameters not specified\nUse --help to print usage.";
+        throw std::runtime_error("Correct video source parameters not specified\nUse --help to print usage.");
       }
       else
       {
@@ -467,13 +467,13 @@ int DetectionVisualizer::run()
   
     if (cfgfile == "" || weightsfile == "")
     {
-      throw "Wrong arguments\nUse --help to print usage.";
+      throw std::runtime_error("Wrong arguments\nUse --help to print usage.");
     }
   }
-  catch(const std::string msg)
+  catch(std::runtime_error& err)
   {
-    errorDisplayLoop(msg);
-    std::cout << msg << std::endl << std::endl;
+    errorDisplayLoop(err.what());
+    std::cout << err.what() << std::endl << std::endl;
     return EXIT_FAILURE;
   }
  
